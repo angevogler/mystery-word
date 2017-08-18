@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html>
+  <head>
+  </head>
+
+  <body>
+    <header>
+      <h2> Mystery Word</h2>
+      <h2>Guesses Remaining: 8</h3>
+    </header>
+
+    <div class='word'>
+      <h1>  {{ #word }} _ {{ /word }}</h1>
+    </div>
+
+    {{ #error }}
+    <h3>Guess invalid - must be one character in length</h3>
+    {{ /error }}
+
+    <div>
+      <form method='post' action='/guess'>
+        <input type='text' name='guess' placeholder='Enter Letter'>
+        <input type='submit' value='Guess'>
+      </form>
+    </div>
+
+    <div>
+      <h3>Letters Guessed:</h3>
+      <p>{{ lettersGuessed }}</p>
+    </div>
+  </body>
+</html>
