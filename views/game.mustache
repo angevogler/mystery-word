@@ -7,11 +7,15 @@
   <body>
     <header>
       <h2> Mystery Word</h2>
-      <h2>Guesses Remaining: 8</h3>
+      <h2>Guesses Remaining: {{ guessesLeft }}</h3>
     </header>
 
+    {{ #incorrect }}
+    <h3>Incorrect Guess - please try again</h3>
+    {{ /incorrect }}
+
     <div class='word'>
-      <h1>  {{ #word }} _ {{ /word }}</h1>
+      <h1>{{ blanks }}</h1>
     </div>
 
     {{ #error }}

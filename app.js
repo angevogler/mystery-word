@@ -24,6 +24,7 @@ let word = [];
 let blanks = [];
 let display;
 let lettersGuessed = [];
+let guesses = 8;
 
 // when a user that is not in a current game arrives at your root page
 app.get('/', function (req, res) {
@@ -34,34 +35,51 @@ app.get('/', function (req, res) {
 
   // display the # of letters (_ _ _ _) & guessing form
   res.render('game', {
-    word: blanks,
+    blanks: blanks,
     lettersGuessed: lettersGuessed,
+    guessesLeft: guesses,
   });
 });
 
 // when a user supplies a guess
 app.post('/guess', function (req, res) {
+  // define variables
   let guess = req.body.guess;
+  let answer = false;
+
+  for (let i = 0; i < word.length; i++) {
+    // if the guess matches a letter in the word
+    if (guess === word[i]) {
+      // display that correct letter
+      blanks[i] = guess;
+      answer = true;
+    }
+  }
+  console.log('guess is: ' + answer);
+
+
   // validate submitted form to make sure there is only one letter
-  if (guess.length === 1) {
+  if (guess.length === 1 && answer === true) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
-    for (let i = 0; i < word.length; i++) {
-      let letter = word[i];
-      // if the guess matches a letter in the word
-      if (guess === word[i]) {
-        // display that correct letter
-        blanks[i] = guess;
-      }
-    }
     res.redirect('/');
+  } else if (guess.length === 1 && answer === false) {
+    lettersGuessed.push(guess);
+    console.log(lettersGuessed);
+    guesses = guesses - 1;
+    res.render('game', {
+        blanks: blanks,
+        lettersGuessed: lettersGuessed,
+        incorrect: true,
+        guessesLeft: guesses,
+    });
   // if user enters more than one letter, display input invalid msg and let them try again
   } else {
-    res.render('game', {
-      word: blanks,
-      lettersGuessed,
-      error: true,
-    });
+     res.render('game', {
+       blanks: blanks,
+       lettersGuessed: lettersGuessed,
+       error: true,
+     });
   }
 
   // display if guess was correct or incorrect
