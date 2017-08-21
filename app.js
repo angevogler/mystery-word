@@ -75,7 +75,7 @@ app.get('/easy-game', function (req, res) {
   // display the # of letters (_ _ _ _) & guessing form
   res.render('game', {
     blanks: req.session.blanks.join(''),
-    lettersGuessed: req.session.lettersGuessed,
+    lettersGuessed: req.session.lettersGuessed.join(''),
     guessesLeft: req.session.guesses,
   });
 });
@@ -108,7 +108,7 @@ app.get('/medium-game', function (req, res) {
   // display the # of letters (_ _ _ _) & guessing form
   res.render('game', {
     blanks: req.session.blanks.join(''),
-    lettersGuessed: req.session.lettersGuessed,
+    lettersGuessed: req.session.lettersGuessed.join(''),
     guessesLeft: req.session.guesses,
   });
 });
@@ -141,7 +141,7 @@ app.get('/hard-game', function (req, res) {
   // display the # of letters (_ _ _ _) & guessing form
   res.render('game', {
     blanks: req.session.blanks.join(''),
-    lettersGuessed: req.session.lettersGuessed,
+    lettersGuessed: req.session.lettersGuessed.join(''),
     guessesLeft: req.session.guesses,
   });
 });
@@ -190,41 +190,41 @@ app.post('/guess', function (req, res) {
     console.log(req.session.blanks);
     res.render('game', {
       blanks: req.session.blanks.join(''),
-      lettersGuessed: lettersGuessed,
+      lettersGuessed: lettersGuessed.join(''),
       alreadyGuessed: true,
       guessesLeft: req.session.guesses,
     });
   // guess is correct and there are still blanks left in blank array
-} else if (guess.length === 1 && answer === true && req.session.guesses > 1 && stillBlank === true) {
+  } else if (guess.length === 1 && answer === true && req.session.guesses > 1 && stillBlank === true) {
     lettersGuessed.push(guess);
     console.log('letters guessed: ' + lettersGuessed);
     console.log(req.session.blanks);
     res.render('game', {
       blanks: req.session.blanks.join(''),
-      lettersGuessed: lettersGuessed,
+      lettersGuessed: lettersGuessed.join(' '),
       guessesLeft: req.session.guesses,
     });
   // if user wins
-} else if (guess.length === 1 && answer === true && req.session.guesses > 1 && stillBlank === false) {
+  } else if (guess.length === 1 && answer === true && req.session.guesses > 1 && stillBlank === false) {
     lettersGuessed.push(guess);
     console.log('letters guessed: ' + lettersGuessed);
     console.log(req.session.blanks);
     console.log('GAME OVER USER WINS')
     res.render('game-over', {
       blanks: req.session.blanks.join(''),
-      lettersGuessed: lettersGuessed,
+      lettersGuessed: lettersGuessed.join(' '),
       youWin: true,
       guessesLeft: req.session.guesses,
     });
   // if user guesses wrong letter but still has guesses left
-} else if (guess.length === 1 && answer === false && req.session.guesses > 1) {
+  } else if (guess.length === 1 && answer === false && req.session.guesses > 1) {
     lettersGuessed.push(guess);
     console.log('letters guessed: ' + lettersGuessed);
     console.log(req.session.blanks);
     req.session.guesses = req.session.guesses - 1;
     res.render('game', {
         blanks: req.session.blanks.join(''),
-        lettersGuessed: lettersGuessed,
+        lettersGuessed: lettersGuessed.join(' '),
         incorrect: true,
         guessesLeft: req.session.guesses,
     });
@@ -237,15 +237,15 @@ app.post('/guess', function (req, res) {
     req.session.guesses = req.session.guesses - 1
     res.render('game-over', {
         word: req.session.word.join(''),
-        lettersGuessed: lettersGuessed,
+        lettersGuessed: lettersGuessed.join(' '),
         youLose: true,
         guessesLeft: req.session.guesses,
     });
   // if user enters more than one letter, display input invalid msg and let them try again
   }  else {
      res.render('game', {
-       blanks: req.session.blanks.join(''),
-       lettersGuessed: lettersGuessed,
+       blanks: req.session.blanks.join(' '),
+       lettersGuessed: lettersGuessed.join(' '),
        error: true,
      });
   }

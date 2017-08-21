@@ -4,23 +4,33 @@
 
 <html>
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Kranky" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link rel='stylesheet' href='style.css'>
+    <title>Mystery Game - Home</title>
   </head>
 
-  <body>
-    <h1> Welcome to Mystery Word!</h3>
+  <body class='home-wrapper'>
+    <div class='home-container'>
+      <h1 id='home-title'> Welcome to Mystery Word!</h3>
 
-    <h2>Choose Difficulty Level</h2>
-    <a href='/easy-game'>
-      <button>Easy</button>
-    </a>
+      <h2 id='home-subtitle'>Choose Difficulty Level:</h2>
 
-    <a href='/medium-game'>
-      <button>Medium</button>
-    </a>
+      <div class='lvl-btns'>
+        <a href='/easy-game'>
+          <button id='easy-btn' class='lvl-btn'>Easy</button>
+        </a>
 
-    <a href='/hard-game'>
-      <button>Hard</button>
-    </a>
+        <a href='/medium-game'>
+          <button id='med-btn' class='lvl-btn'>Medium</button>
+        </a>
+
+        <a href='/hard-game'>
+          <button id='hard-btn' class='lvl-btn'>Hard</button>
+        </a>
+      </div>
+    </div>
   </body>
 
 </html>

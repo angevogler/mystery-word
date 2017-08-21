@@ -2,40 +2,47 @@
 
 <html>
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Kranky" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link rel='stylesheet' href='style.css'>
+    <title>Mystery Game</title>
   </head>
 
   <body>
     <header>
-      <h2> Mystery Word</h2>
-      <h2>Guesses Remaining: {{ guessesLeft }}</h3>
+      <h2 class='header-title'> Mystery Word</h2>
+      <h2 class='guesses-left'>Guesses Remaining: {{ guessesLeft }}</h2>
     </header>
 
-    {{ #alreadyGuessed }}
-    <h3>Looks like you've already guessed that, try again!</h3>
-    {{ /alreadyGuessed }}
-
-    {{ #incorrect }}
-    <h3>Incorrect Guess - please try again</h3>
-    {{ /incorrect }}
-
-    {{ #error }}
-    <h3>Guess invalid - must be one character in length</h3>
-    {{ /error }}
-
-    <div>
+    <div class='word-display'>
       <h1>{{ blanks }}</h1>
     </div>
 
-    <div>
-      <form method='post' action='/guess'>
-        <input type='text' name='guess' placeholder='Enter Letter'>
-        <input type='submit' value='Guess'>
-      </form>
-    </div>
+    <div class='content-display'>
+      {{ #alreadyGuessed }}
+      <h3 class='error-msg'>Looks like you've already guessed that, try again!</h3>
+      {{ /alreadyGuessed }}
 
-    <div>
-      <h3>Letters Guessed:</h3>
-      <p>{{ lettersGuessed }}</p>
+      {{ #incorrect }}
+      <h3 class='error-msg'>Incorrect Guess - please try again</h3>
+      {{ /incorrect }}
+
+      {{ #error }}
+      <h3 class='error-msg'>Guess invalid - must be one character in length</h3>
+      {{ /error }}
+
+      <div>
+        <form method='post' action='/guess'>
+          <input id='guess' type='text' name='guess' placeholder='Enter Letter'>
+          <input id='guess-btn' type='submit' value='Make a Guess'>
+        </form>
+      </div>
+
+      <div>
+        <h3 class='letters'>Letters Guessed:</h3>
+        <p>{{ lettersGuessed }}</p>
+      </div>
     </div>
   </body>
 </html>

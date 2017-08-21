@@ -1,28 +1,40 @@
 <!doctype html>
 <html>
   <head>
-    <title>game-over</title>
+    <link href="https://fonts.googleapis.com/css?family=Kranky" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link rel='stylesheet' href='style.css'>
+    <title>Mystery Game - Game Over</title>
   </head>
 
   <body>
     <header>
-      <h2> Mystery Word</h2>
-      <h2>Guesses Remaining: {{ guessesLeft }}</h3>
+      <h2 class='header-title'> Mystery Word</h2>
+      <h2 class='guesses-left'>Guesses Remaining: {{ guessesLeft }}</h2>
     </header>
 
-    {{ #youWin }}
-      <h1>{{ blanks }}</h1>
-      <h2>You Win!</h2>
-    {{ /youWin }}
+    <div class='end-game-container'>
+      {{ #youWin }}
+        <h1 class='end-game'>You Win!</h1>
+        <h1 class='end-game-word'>{{ blanks }}</h1>
+      {{ /youWin }}
 
-    {{ #youLose }}
-      <h1>Correct Word: {{ word }}</h1>
-      <h3>You lose, try again!</h3>
-    {{ /youLose }}
+      {{ #youLose }}
+        <h1 class='end-game'>Game Over!</h1>
+        <h3 class='correct'>Correct Word:</h3>
+        <h1 class='end-game-word'>{{ word }}</h1>
+      {{ /youLose }}
 
-    <a href='/'>
-      <button>Play Again</button>
-    </a>
+      <div>
+        <h3 class='letters'>Letters Guessed:</h3>
+        <p>{{ lettersGuessed }}</p>
+      </div>
+
+      <a href='/'>
+        <button class='play-again'>Play Again</button>
+      </a>
+    </div>
   </body>
 
 </html>

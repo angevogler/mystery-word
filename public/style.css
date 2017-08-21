@@ -1,0 +1,151 @@
+/* STYLE NOTES
+main background color: 	#F0FFFF
+title font name: font-family: 'Kranky', cursive;
+sub-title font name: font-family: 'Shadows Into Light Two', cursive;
+font color: 	#708090
+*/
+
+/* ******** HOME PAGE ******** */
+body {
+  background-color: #F0FFFF;
+  color: 	#708090;
+}
+
+.home-container {
+  background-color:	#DCDCDC;
+  width: 60%;
+  height: 400px;
+  padding: 5%;
+  margin: 10% 15%;
+  border: dotted 7px #F08080;
+}
+
+#home-title {
+  font-family: 'Kranky', cursive;
+  font-size: 75px;
+  text-align: center;
+}
+
+#home-subtitle {
+  font-family: 'Shadows Into Light Two', cursive;
+  font-size: 45px;
+  text-align: center;
+}
+
+.lvl-btns {
+  margin: 0 auto;
+}
+
+.lvl-btn {
+  width: 30%;
+  padding: 5%;
+  margin: 1%;
+  border-radius: 4px;
+  border-color: #708090;
+  font-family: 'Shadows Into Light Two', cursive;
+  font-size: 30px;
+  color: #708090;
+}
+
+#easy-btn {
+  background-color: #F0FFFF;
+}
+
+#med-btn {
+  background-color: #E0FFFF;
+}
+
+#hard-btn {
+  background-color:	#ADD8E6;
+}
+
+/* ******** GAME PAGE ******** */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #DCDCDC;
+  margin: -7px;
+  padding: 0 2%;
+  border-bottom: dotted 7px #F08080;
+}
+
+.header-title {
+  font-family: 'Kranky', cursive;
+  font-size: 40px;
+}
+
+.guesses-left {
+  font-family: 'Shadows Into Light Two', cursive;
+  font-size: 35px;
+}
+
+.word-display {
+  font-family: 'Kranky', cursive;
+  text-align: center;
+  font-size: 300%;
+}
+
+.content-display {
+  display: flex;
+  flex-direction: column;
+  justify content: center;
+  align-content: center;
+  width: 70%;
+  margin: 0 15%;
+  padding: 5%;
+  font-family: 'Playfair Display', serif;
+}
+
+.error-msg {
+  color: #F08080;
+}
+
+#guess {
+  width: 45%;
+  height:40px;
+}
+
+#guess-btn {
+  width: 50%;
+  font-size: 500px;
+}
+
+.letters {
+  text-decoration: underline;
+  font-weight: 1000;
+}
+
+.end-game-container {
+  background-color:	white;
+  width: 60%;
+  padding: 5%;
+  margin: 10% 15%;
+  border: dotted 7px #F08080;
+  text-align: center;
+}
+
+.end-game {
+  font-family: 'Shadows Into Light Two', cursive;
+  font-size: 500%;
+}
+
+.end-game-word {
+  font-family: 'Kranky', cursive;
+  font-size: 500%;
+}
+
+.correct {
+  font-size: 45px;
+}
+
+.play-again {
+  background-color: #F08080;
+  border-radius: 4px;
+  width: 30%;
+  padding: 5%;
+  border-color: #708090;
+  color: #F0FFFF;
+  font-family: 'Shadows Into Light Two', cursive;
+  font-size: 35px;
+}
