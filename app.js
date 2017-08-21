@@ -49,6 +49,7 @@ app.post('/guess', function (req, res) {
   let guess = req.body.guess;
   let answer = false;
   let stillBlank = true;
+  let alreadyGuessed = false;
 
   for (let i = 0; i < word.length; i++) {
     // if the guess matches a letter in the word
@@ -56,6 +57,10 @@ app.post('/guess', function (req, res) {
       // display that correct letter
       blanks[i] = guess;
       answer = true;
+    }
+    // if the guess matches a letter already guessed
+    if (guess === lettersGuessed[i]) {
+      alreadyGuessed = true;
     }
   }
 
@@ -68,44 +73,56 @@ app.post('/guess', function (req, res) {
 
 
   // validate submitted form to make sure there is only one letter
+  // if guess if > 1 but has already been guessed
+  if (guess.length === 1 && alreadyGuessed === true) {
+    console.log(lettersGuessed);
+    res.render('game', {
+      blanks: blanks.join(''),
+      lettersGuessed: lettersGuessed,
+      alreadyGuessed: true,
+      guessesLeft: guesses,
+    });
   // guess is correct and there are still blanks left in blank array
-  if (guess.length === 1 && answer === true && guess != 0 && stillBlank === true) {
+  } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === true) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
     res.redirect('/');
-} else if (guess.length === 1 && answer === true && guess != 0 && stillBlank === false) {
-  lettersGuessed.push(guess);
-  console.log(lettersGuessed);
-  guesses = guesses - 1;
-  res.render('game', {
-      blanks: blanks,
-      lettersGuessed: lettersGuessed,
-      youWin: true,
-      guessesLeft: guesses,
-  });
-} else if (guess.length === 1 && answer === false && guesses != 0) {
+  // if user wins
+  } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === false) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
     guesses = guesses - 1;
     res.render('game', {
-        blanks: blanks,
+      blanks: blanks.join(''),
+      lettersGuessed: lettersGuessed,
+      youWin: true,
+      guessesLeft: guesses,
+    });
+  // if user guesses wrong letter but still has guesses left
+  } else if (guess.length === 1 && answer === false && guesses > 1) {
+    lettersGuessed.push(guess);
+    console.log(lettersGuessed);
+    guesses = guesses - 1;
+    res.render('game', {
+        blanks: blanks.join(''),
         lettersGuessed: lettersGuessed,
         incorrect: true,
         guessesLeft: guesses,
     });
-  // if user enters more than one letter, display input invalid msg and let them try again
-} else if (guess.length === 1 && answer === false && guesses === 0) {
+  // if user loses
+  } else if (guess.length === 1 && answer === false && guesses === 1) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
     res.render('game', {
-        blanks: blanks,
+        blanks: blanks.join(''),
         lettersGuessed: lettersGuessed,
         youLose: true,
-        guessesLeft: guesses,
+        guessesLeft: guesses - 1,
     });
-}  else {
+  // if user enters more than one letter, display input invalid msg and let them try again
+  }  else {
      res.render('game', {
-       blanks: blanks,
+       blanks: blanks.join(''),
        lettersGuessed: lettersGuessed,
        error: true,
      });
@@ -132,7 +149,7 @@ app.listen(4000, function () {
   // push that word into an array
   word = randomWord.split('');
   for (let i = 0; i < word.length; i++) {
-    blanks.push('_');
+    blanks.push('_ ');
   }
   blanks = blanks;
 

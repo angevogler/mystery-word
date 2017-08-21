@@ -10,6 +10,10 @@
       <h2>Guesses Remaining: {{ guessesLeft }}</h3>
     </header>
 
+    {{ #alreadyGuessed }}
+    <h3>Looks like you've already guessed that, try again!</h3>
+    {{ /alreadyGuessed }}
+
     {{ #incorrect }}
     <h3>Incorrect Guess - please try again</h3>
     {{ /incorrect }}
