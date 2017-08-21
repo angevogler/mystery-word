@@ -21,15 +21,36 @@ app.set('view engine', 'mustache');
 
 const words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
 
+let easyWords = [];
+for (let i = 0; i < words.length; i++) {
+  if (words[i].length >= 4 && words[i].length <= 6) {
+    easyWords.push(words[i]);
+  }
+}
+
+let mediumWords = [];
+for (let i = 0; i < words.length; i++) {
+  if (words[i].length >= 6 && words[i].length <= 8) {
+    mediumWords.push(words[i]);
+  }
+}
+
+let hardWords = [];
+for (let i = 0; i < words.length; i++) {
+  if (words[i].length > 8) {
+    hardWords.push(words[i]);
+  }
+}
+
 // when a user visits the home page
 app.get('/', function (req, res) {
   res.render('home');
 });
 
-// when a user that is not in a current game arrives at your root page
-app.get('/begin-game', function (req, res) {
+// EASY MODE
+app.get('/easy-game', function (req, res) {
 
-  console.log('NEW GAME');
+  console.log('NEW GAME -- EASY MODE');
 
   // store the word in a session
   req.session.word = [];
@@ -39,7 +60,73 @@ app.get('/begin-game', function (req, res) {
 
   let randomWord = null;
 
-  randomWord = words[Math.floor(Math.random() * words.length)];
+  randomWord = easyWords[Math.floor(Math.random() * easyWords.length)];
+  // push that word into an array
+  req.session.word = randomWord.split('');
+
+  for (let i = 0; i < req.session.word.length; i++) {
+    req.session.blanks.push('_ ');
+  }
+
+  console.log(randomWord);
+  console.log(req.session.word);
+  console.log(req.session.blanks);
+
+  // display the # of letters (_ _ _ _) & guessing form
+  res.render('game', {
+    blanks: req.session.blanks.join(''),
+    lettersGuessed: req.session.lettersGuessed,
+    guessesLeft: req.session.guesses,
+  });
+});
+
+// MEDIUM MODE
+app.get('/medium-game', function (req, res) {
+
+  console.log('NEW GAME -- MEDIUM MODE');
+
+  // store the word in a session
+  req.session.word = [];
+  req.session.blanks = [];
+  req.session.lettersGuessed = [];
+  req.session.guesses = 8;
+
+  let randomWord = null;
+
+  randomWord = mediumWords[Math.floor(Math.random() * mediumWords.length)];
+  // push that word into an array
+  req.session.word = randomWord.split('');
+
+  for (let i = 0; i < req.session.word.length; i++) {
+    req.session.blanks.push('_ ');
+  }
+
+  console.log(randomWord);
+  console.log(req.session.word);
+  console.log(req.session.blanks);
+
+  // display the # of letters (_ _ _ _) & guessing form
+  res.render('game', {
+    blanks: req.session.blanks.join(''),
+    lettersGuessed: req.session.lettersGuessed,
+    guessesLeft: req.session.guesses,
+  });
+});
+
+// HARD MODE
+app.get('/hard-game', function (req, res) {
+
+  console.log('NEW GAME -- HARD MODE');
+
+  // store the word in a session
+  req.session.word = [];
+  req.session.blanks = [];
+  req.session.lettersGuessed = [];
+  req.session.guesses = 8;
+
+  let randomWord = null;
+
+  randomWord = hardWords[Math.floor(Math.random() * hardWords.length)];
   // push that word into an array
   req.session.word = randomWord.split('');
 
@@ -162,18 +249,6 @@ app.post('/guess', function (req, res) {
        error: true,
      });
   }
-
-  // display partially guessed word + letter spaces that have not been guessed
-  // remind user of guesses left
-    // guesses left are determined by what is in the session
-    // lose a guess when guess is incorrect
-    // if user guesses same letter twice do not take away guess but display error message
-
-  // game ends when user constructs full word or runs out of guesses
-    // if player constructs full word display message
-        // let stillBlank = false;
-    // if player runs out of guesses, reveal correct word
-    // when game ends, ask the user if they want to play again
 });
 
 // run the server
