@@ -7,6 +7,7 @@ const fs = require('fs');
 
 // configure server
 const app = express();
+app.use(express.static('public'));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(session({
     secret: '4494@askdlhgkaj',
@@ -28,8 +29,9 @@ let guesses = 8;
 
 // when a user that is not in a current game arrives at your root page
 app.get('/', function (req, res) {
+  console.log('word is: ' + word);
   // blanks = blanks;
-  console.log(blanks);
+  console.log('letters guessed correctly: ' + blanks);
   // store the word in a session
   req.session.word = word;
 
@@ -46,6 +48,7 @@ app.post('/guess', function (req, res) {
   // define variables
   let guess = req.body.guess;
   let answer = false;
+  let stillBlank = true;
 
   for (let i = 0; i < word.length; i++) {
     // if the guess matches a letter in the word
@@ -55,15 +58,32 @@ app.post('/guess', function (req, res) {
       answer = true;
     }
   }
+
+  if ( word.join('') === blanks.join('') ) {
+    stillBlank = false;
+  }
+
   console.log('guess is: ' + answer);
+  console.log('still blank is: ' + stillBlank);
 
 
   // validate submitted form to make sure there is only one letter
-  if (guess.length === 1 && answer === true) {
+  // guess is correct and there are still blanks left in blank array
+  if (guess.length === 1 && answer === true && guess != 0 && stillBlank === true) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
     res.redirect('/');
-  } else if (guess.length === 1 && answer === false) {
+} else if (guess.length === 1 && answer === true && guess != 0 && stillBlank === false) {
+  lettersGuessed.push(guess);
+  console.log(lettersGuessed);
+  guesses = guesses - 1;
+  res.render('game', {
+      blanks: blanks,
+      lettersGuessed: lettersGuessed,
+      youWin: true,
+      guessesLeft: guesses,
+  });
+} else if (guess.length === 1 && answer === false && guesses != 0) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
     guesses = guesses - 1;
@@ -74,7 +94,16 @@ app.post('/guess', function (req, res) {
         guessesLeft: guesses,
     });
   // if user enters more than one letter, display input invalid msg and let them try again
-  } else {
+} else if (guess.length === 1 && answer === false && guesses === 0) {
+    lettersGuessed.push(guess);
+    console.log(lettersGuessed);
+    res.render('game', {
+        blanks: blanks,
+        lettersGuessed: lettersGuessed,
+        youLose: true,
+        guessesLeft: guesses,
+    });
+}  else {
      res.render('game', {
        blanks: blanks,
        lettersGuessed: lettersGuessed,
@@ -82,15 +111,6 @@ app.post('/guess', function (req, res) {
      });
   }
 
-  // display if guess was correct or incorrect
-  // for (let i = 0; i < word.length; i++) {
-  //   let letter = word[i];
-  //   // if the guess matches a letter in the word
-  //   if (guess === word[i]) {
-  //     // display that correct letter
-  //     blanks[i] = guess;
-  //   }
-  // }
   // display partially guessed word + letter spaces that have not been guessed
   // remind user of guesses left
     // guesses left are determined by what is in the session
@@ -118,4 +138,5 @@ app.listen(4000, function () {
 
   console.log('Let the games begin');
   console.log(randomWord);
+  console.log(word);
 });

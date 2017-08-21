@@ -14,13 +14,21 @@
     <h3>Incorrect Guess - please try again</h3>
     {{ /incorrect }}
 
-    <div class='word'>
-      <h1>{{ blanks }}</h1>
-    </div>
+    {{ #youWin }}
+    <h3>You Win! Play Again</h3>
+    {{ /youWin }}
+
+    {{ #youLose }}
+    <h3>You lose, try again!</h3>
+    {{ /youLose }}
 
     {{ #error }}
     <h3>Guess invalid - must be one character in length</h3>
     {{ /error }}
+
+    <div>
+      <h1>{{ blanks }}</h1>
+    </div>
 
     <div>
       <form method='post' action='/guess'>
