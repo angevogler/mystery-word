@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <title>game-over</title>
+  </head>
+
+  <body>
+    <header>
+      <h2> Mystery Word</h2>
+      <h2>Guesses Remaining: {{ guessesLeft }}</h3>
+    </header>
+
+    {{ #youWin }}
+      <h1>{{ blanks }}</h1>
+      <h2>You Win!</h2>
+    {{ /youWin }}
+
+    {{ #youLose }}
+      <h1>Correct Word: {{ word }}</h1>
+      <h3>You lose, try again!</h3>
+    {{ /youLose }}
+
+    <a href='/guess'>
+      <button>Play Again</button>
+    </a>
+  </body>
+
+</html>

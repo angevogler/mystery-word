@@ -27,8 +27,13 @@ let display;
 let lettersGuessed = [];
 let guesses = 8;
 
+// when a user visits the home page
+app.get('/home', function (req, res) {
+  res.render('home');
+});
+
 // when a user that is not in a current game arrives at your root page
-app.get('/', function (req, res) {
+app.get('/guess', function (req, res) {
   console.log('word is: ' + word);
   // blanks = blanks;
   console.log('letters guessed correctly: ' + blanks);
@@ -41,6 +46,11 @@ app.get('/', function (req, res) {
     lettersGuessed: lettersGuessed,
     guessesLeft: guesses,
   });
+});
+
+app.get('/game-over', function (req, res) {
+  res.render('game-over');
+  req.session.destroy();
 });
 
 // when a user supplies a guess
@@ -86,13 +96,13 @@ app.post('/guess', function (req, res) {
   } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === true) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
-    res.redirect('/');
+    res.redirect('/guess');
   // if user wins
   } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === false) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
     guesses = guesses - 1;
-    res.render('game', {
+    res.render('game-over', {
       blanks: blanks.join(''),
       lettersGuessed: lettersGuessed,
       youWin: true,
@@ -109,12 +119,12 @@ app.post('/guess', function (req, res) {
         incorrect: true,
         guessesLeft: guesses,
     });
-  // if user loses
+  // if user loses display correct word
   } else if (guess.length === 1 && answer === false && guesses === 1) {
     lettersGuessed.push(guess);
     console.log(lettersGuessed);
-    res.render('game', {
-        blanks: blanks.join(''),
+    res.render('game-over', {
+        word: word.join(''),
         lettersGuessed: lettersGuessed,
         youLose: true,
         guessesLeft: guesses - 1,
