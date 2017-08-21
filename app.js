@@ -20,10 +20,6 @@ app.set('views', './views')
 app.set('view engine', 'mustache');
 
 const words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
-// let randomWord = null;
-let display;
-// let lettersGuessed = [];
-let guesses = 8;
 
 // when a user visits the home page
 app.get('/', function (req, res) {
@@ -38,12 +34,9 @@ app.get('/begin-game', function (req, res) {
   // store the word in a session
   req.session.word = [];
   req.session.blanks = [];
-  // req.session.guesses = 8;
   req.session.lettersGuessed = [];
+  req.session.guesses = 8;
 
-  // let display;
-  // let lettersGuessed = [];
-  // let guesses = 8;
   let randomWord = null;
 
   randomWord = words[Math.floor(Math.random() * words.length)];
@@ -54,8 +47,6 @@ app.get('/begin-game', function (req, res) {
     req.session.blanks.push('_ ');
   }
 
-  // blanks = blanks;
-
   console.log(randomWord);
   console.log(req.session.word);
   console.log(req.session.blanks);
@@ -64,7 +55,7 @@ app.get('/begin-game', function (req, res) {
   res.render('game', {
     blanks: req.session.blanks.join(''),
     lettersGuessed: req.session.lettersGuessed,
-    guessesLeft: guesses,
+    guessesLeft: req.session.guesses,
   });
 });
 
@@ -72,9 +63,9 @@ app.get('/begin-game', function (req, res) {
 app.get('/game-over', function (req, res) {
   res.render('game-over');
   req.session.destroy();
-  randomWord = null;
-  word = [];
-  blanks = [];
+  // randomWord = null;
+  // word = [];
+  // blanks = [];
 });
 
 // when a user supplies a guess
@@ -114,20 +105,20 @@ app.post('/guess', function (req, res) {
       blanks: req.session.blanks.join(''),
       lettersGuessed: lettersGuessed,
       alreadyGuessed: true,
-      guessesLeft: guesses,
+      guessesLeft: req.session.guesses,
     });
   // guess is correct and there are still blanks left in blank array
-  } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === true) {
+} else if (guess.length === 1 && answer === true && req.session.guesses > 1 && stillBlank === true) {
     lettersGuessed.push(guess);
     console.log('letters guessed: ' + lettersGuessed);
     console.log(req.session.blanks);
     res.render('game', {
       blanks: req.session.blanks.join(''),
       lettersGuessed: lettersGuessed,
-      guessesLeft: guesses,
+      guessesLeft: req.session.guesses,
     });
   // if user wins
-  } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === false) {
+} else if (guess.length === 1 && answer === true && req.session.guesses > 1 && stillBlank === false) {
     lettersGuessed.push(guess);
     console.log('letters guessed: ' + lettersGuessed);
     console.log(req.session.blanks);
@@ -136,31 +127,32 @@ app.post('/guess', function (req, res) {
       blanks: req.session.blanks.join(''),
       lettersGuessed: lettersGuessed,
       youWin: true,
-      guessesLeft: guesses,
+      guessesLeft: req.session.guesses,
     });
   // if user guesses wrong letter but still has guesses left
-  } else if (guess.length === 1 && answer === false && guesses > 1) {
+} else if (guess.length === 1 && answer === false && req.session.guesses > 1) {
     lettersGuessed.push(guess);
     console.log('letters guessed: ' + lettersGuessed);
     console.log(req.session.blanks);
-    guesses = guesses - 1;
+    req.session.guesses = req.session.guesses - 1;
     res.render('game', {
         blanks: req.session.blanks.join(''),
         lettersGuessed: lettersGuessed,
         incorrect: true,
-        guessesLeft: guesses,
+        guessesLeft: req.session.guesses,
     });
   // if user loses display correct word
-  } else if (guess.length === 1 && answer === false && guesses === 1) {
+} else if (guess.length === 1 && answer === false && req.session.guesses === 1) {
     lettersGuessed.push(guess);
     console.log('letters guessed: ' + lettersGuessed);
     console.log(req.session.blanks);
     console.log('GAME OVER USER LOSES')
+    req.session.guesses = req.session.guesses - 1
     res.render('game-over', {
         word: req.session.word.join(''),
         lettersGuessed: lettersGuessed,
         youLose: true,
-        guessesLeft: guesses - 1,
+        guessesLeft: req.session.guesses,
     });
   // if user enters more than one letter, display input invalid msg and let them try again
   }  else {
@@ -186,17 +178,6 @@ app.post('/guess', function (req, res) {
 
 // run the server
 app.listen(4000, function () {
-  // // create function to get random word
-  // // words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
-  // randomWord = words[Math.floor(Math.random() * words.length)];
-  // // push that word into an array
-  // word = randomWord.split('');
-  // for (let i = 0; i < word.length; i++) {
-  //   blanks.push('_ ');
-  // }
-  // blanks = blanks;
 
   console.log('Let the games begin');
-  // console.log(randomWord);
-  // console.log(word);
 });
