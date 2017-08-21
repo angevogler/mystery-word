@@ -20,52 +20,78 @@ app.set('views', './views')
 app.set('view engine', 'mustache');
 
 const words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
-let randomWord = null;
-let word = [];
-let blanks = [];
+// let randomWord = null;
 let display;
-let lettersGuessed = [];
+// let lettersGuessed = [];
 let guesses = 8;
 
 // when a user visits the home page
-app.get('/home', function (req, res) {
+app.get('/', function (req, res) {
   res.render('home');
 });
 
 // when a user that is not in a current game arrives at your root page
-app.get('/guess', function (req, res) {
-  console.log('word is: ' + word);
-  // blanks = blanks;
-  console.log('letters guessed correctly: ' + blanks);
+app.get('/begin-game', function (req, res) {
+
+  console.log('NEW GAME');
+
   // store the word in a session
-  req.session.word = word;
+  req.session.word = [];
+  req.session.blanks = [];
+  // req.session.guesses = 8;
+  req.session.lettersGuessed = [];
+
+  // let display;
+  // let lettersGuessed = [];
+  // let guesses = 8;
+  let randomWord = null;
+
+  randomWord = words[Math.floor(Math.random() * words.length)];
+  // push that word into an array
+  req.session.word = randomWord.split('');
+
+  for (let i = 0; i < req.session.word.length; i++) {
+    req.session.blanks.push('_ ');
+  }
+
+  // blanks = blanks;
+
+  console.log(randomWord);
+  console.log(req.session.word);
+  console.log(req.session.blanks);
 
   // display the # of letters (_ _ _ _) & guessing form
   res.render('game', {
-    blanks: blanks.join(''),
-    lettersGuessed: lettersGuessed,
+    blanks: req.session.blanks.join(''),
+    lettersGuessed: req.session.lettersGuessed,
     guessesLeft: guesses,
   });
 });
 
+// when a game is complete
 app.get('/game-over', function (req, res) {
   res.render('game-over');
   req.session.destroy();
+  randomWord = null;
+  word = [];
+  blanks = [];
 });
 
 // when a user supplies a guess
 app.post('/guess', function (req, res) {
   // define variables
+  // let guesses = req.session.guesses;
+  let lettersGuessed = req.session.lettersGuessed;
   let guess = req.body.guess;
   let answer = false;
   let stillBlank = true;
   let alreadyGuessed = false;
 
-  for (let i = 0; i < word.length; i++) {
+  for (let i = 0; i < req.session.word.length; i++) {
     // if the guess matches a letter in the word
-    if (guess === word[i]) {
+    if (guess === req.session.word[i]) {
       // display that correct letter
-      blanks[i] = guess;
+      req.session.blanks[i] = guess;
       answer = true;
     }
     // if the guess matches a letter already guessed
@@ -74,20 +100,18 @@ app.post('/guess', function (req, res) {
     }
   }
 
-  if ( word.join('') === blanks.join('') ) {
+  if ( req.session.word.join('') === req.session.blanks.join('') ) {
     stillBlank = false;
   }
-
-  console.log('guess is: ' + answer);
-  console.log('still blank is: ' + stillBlank);
 
 
   // validate submitted form to make sure there is only one letter
   // if guess if > 1 but has already been guessed
   if (guess.length === 1 && alreadyGuessed === true) {
-    console.log(lettersGuessed);
+    console.log('letters guessed: ' + lettersGuessed);
+    console.log(req.session.blanks);
     res.render('game', {
-      blanks: blanks.join(''),
+      blanks: req.session.blanks.join(''),
       lettersGuessed: lettersGuessed,
       alreadyGuessed: true,
       guessesLeft: guesses,
@@ -95,15 +119,21 @@ app.post('/guess', function (req, res) {
   // guess is correct and there are still blanks left in blank array
   } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === true) {
     lettersGuessed.push(guess);
-    console.log(lettersGuessed);
-    res.redirect('/guess');
+    console.log('letters guessed: ' + lettersGuessed);
+    console.log(req.session.blanks);
+    res.render('game', {
+      blanks: req.session.blanks.join(''),
+      lettersGuessed: lettersGuessed,
+      guessesLeft: guesses,
+    });
   // if user wins
   } else if (guess.length === 1 && answer === true && guesses > 1 && stillBlank === false) {
     lettersGuessed.push(guess);
-    console.log(lettersGuessed);
-    guesses = guesses - 1;
+    console.log('letters guessed: ' + lettersGuessed);
+    console.log(req.session.blanks);
+    console.log('GAME OVER USER WINS')
     res.render('game-over', {
-      blanks: blanks.join(''),
+      blanks: req.session.blanks.join(''),
       lettersGuessed: lettersGuessed,
       youWin: true,
       guessesLeft: guesses,
@@ -111,10 +141,11 @@ app.post('/guess', function (req, res) {
   // if user guesses wrong letter but still has guesses left
   } else if (guess.length === 1 && answer === false && guesses > 1) {
     lettersGuessed.push(guess);
-    console.log(lettersGuessed);
+    console.log('letters guessed: ' + lettersGuessed);
+    console.log(req.session.blanks);
     guesses = guesses - 1;
     res.render('game', {
-        blanks: blanks.join(''),
+        blanks: req.session.blanks.join(''),
         lettersGuessed: lettersGuessed,
         incorrect: true,
         guessesLeft: guesses,
@@ -122,9 +153,11 @@ app.post('/guess', function (req, res) {
   // if user loses display correct word
   } else if (guess.length === 1 && answer === false && guesses === 1) {
     lettersGuessed.push(guess);
-    console.log(lettersGuessed);
+    console.log('letters guessed: ' + lettersGuessed);
+    console.log(req.session.blanks);
+    console.log('GAME OVER USER LOSES')
     res.render('game-over', {
-        word: word.join(''),
+        word: req.session.word.join(''),
         lettersGuessed: lettersGuessed,
         youLose: true,
         guessesLeft: guesses - 1,
@@ -132,7 +165,7 @@ app.post('/guess', function (req, res) {
   // if user enters more than one letter, display input invalid msg and let them try again
   }  else {
      res.render('game', {
-       blanks: blanks.join(''),
+       blanks: req.session.blanks.join(''),
        lettersGuessed: lettersGuessed,
        error: true,
      });
@@ -153,17 +186,17 @@ app.post('/guess', function (req, res) {
 
 // run the server
 app.listen(4000, function () {
-  // create function to get random word
-  // words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
-  randomWord = words[Math.floor(Math.random() * words.length)];
-  // push that word into an array
-  word = randomWord.split('');
-  for (let i = 0; i < word.length; i++) {
-    blanks.push('_ ');
-  }
-  blanks = blanks;
+  // // create function to get random word
+  // // words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
+  // randomWord = words[Math.floor(Math.random() * words.length)];
+  // // push that word into an array
+  // word = randomWord.split('');
+  // for (let i = 0; i < word.length; i++) {
+  //   blanks.push('_ ');
+  // }
+  // blanks = blanks;
 
   console.log('Let the games begin');
-  console.log(randomWord);
-  console.log(word);
+  // console.log(randomWord);
+  // console.log(word);
 });
