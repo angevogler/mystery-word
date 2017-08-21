@@ -37,7 +37,7 @@ app.get('/', function (req, res) {
 
   // display the # of letters (_ _ _ _) & guessing form
   res.render('game', {
-    blanks: blanks,
+    blanks: blanks.join(''),
     lettersGuessed: lettersGuessed,
     guessesLeft: guesses,
   });
