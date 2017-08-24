@@ -14,6 +14,7 @@
       <h2 class='guesses-left'>Guesses Remaining: {{ guessesLeft }}</h2>
     </header>
 
+    <div class="end-game-wrapper">
     <div class='end-game-container'>
       {{ #youWin }}
         <h1 class='end-game'>You Win!</h1>
@@ -34,6 +35,23 @@
       <a href='/'>
         <button class='play-again'>Play Again</button>
       </a>
+    </div>
+
+    {{ #youWin }}
+    <div class='end-game-extra'>
+      <h1>Join the Winner's Circle!</h1>
+      <form method="post" action="/winner-circle">
+        <input type="text" name="winnerName" placeholder="Your Name">
+        <input type="submit" value="Join">
+      </form>
+    </div>
+    {{ /youWin }}
+
+    {{ #youLose }}
+    <div class='end-game-extra'>
+      <img src="hangman.jpg">
+    </div>
+    {{ /youLose }}
     </div>
   </body>
 

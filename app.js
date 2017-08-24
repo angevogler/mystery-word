@@ -19,28 +19,25 @@ app.engine('mustache', mustache());
 app.set('views', './views')
 app.set('view engine', 'mustache');
 
+// constant for words array
 const words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
 
-let easyWords = [];
-for (let i = 0; i < words.length; i++) {
-  if (words[i].length >= 4 && words[i].length <= 6) {
-    easyWords.push(words[i]);
-  }
-}
+// filter word lengths
+let easyWords = words.filter(function(word) {
+  return word.length >= 4 && word.length <= 6;
+});;
 
-let mediumWords = [];
-for (let i = 0; i < words.length; i++) {
-  if (words[i].length >= 6 && words[i].length <= 8) {
-    mediumWords.push(words[i]);
-  }
-}
+let mediumWords = words.filter(function(word) {
+  return word.length >= 6 && word.length <= 8;
+});
 
-let hardWords = [];
-for (let i = 0; i < words.length; i++) {
-  if (words[i].length > 8) {
-    hardWords.push(words[i]);
-  }
-}
+let hardWords = words.filter(function(word) {
+  return word.length >= 8;
+});
+
+// array to store winners
+let winners = [ { name: null } ];
+
 
 // when a user visits the home page
 app.get('/', function (req, res) {
@@ -61,6 +58,7 @@ app.get('/easy-game', function (req, res) {
   let randomWord = null;
 
   randomWord = easyWords[Math.floor(Math.random() * easyWords.length)];
+
   // push that word into an array
   req.session.word = randomWord.split('');
 
@@ -249,6 +247,13 @@ app.post('/guess', function (req, res) {
        error: true,
      });
   }
+});
+
+app.post('/winner-circle', function (req, res) {
+  winners.push(req.body.winnerName);
+  res.render('winners', {
+    winnerName: winners,
+  });
 });
 
 // run the server
